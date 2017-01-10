@@ -122,7 +122,7 @@ public class SimonScreenMichael extends ClickableScreen implements Runnable {
 		int[] xCoors = {350,365,435,450,435,365};
 		int[] yCoors = {300,335,335,300,265,265};
 		for(int i = 0; i < numberOfButtons; i++){
-			final ButtonInterfaceMichael b = getAButton();
+			final ButtonInterfaceMichael b = getButton();
 			b.setColor(buttonColors[i]);
 			b.setX(xCoors[i]);
 			b.setY(yCoors[i]);
@@ -157,6 +157,11 @@ public class SimonScreenMichael extends ClickableScreen implements Runnable {
 				}
 			});
 		}
+	}
+
+	//do getButton()
+	private ButtonInterfaceMichael getButton() {
+		return null;
 	}
 
 }

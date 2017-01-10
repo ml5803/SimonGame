@@ -8,4 +8,6 @@ public interface ProgressInterfaceMichael extends Visible {
 	void setRoundInt(int roundNumber);
 
 	void setSequenceSize(int size);
+
+	ButtonInterfaceMichael get(int sequenceIndex);
 }

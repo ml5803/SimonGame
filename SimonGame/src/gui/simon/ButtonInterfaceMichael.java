@@ -19,4 +19,5 @@ public interface ButtonInterfaceMichael extends Clickable {
 
 	void dim();
 
+	ButtonInterfaceMichael getButton();
 }
