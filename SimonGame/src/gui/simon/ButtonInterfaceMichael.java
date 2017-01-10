@@ -2,6 +2,7 @@ package gui.simon;
 
 import java.awt.Color;
 
+import gui.components.Action;
 import gui.components.Clickable;
 
 public interface ButtonInterfaceMichael extends Clickable {
@@ -11,5 +12,11 @@ public interface ButtonInterfaceMichael extends Clickable {
 	void setX(int xCoors);
 
 	void setY(int yCoors);
+
+	void setAction(Action action);
+	
+	void highlight();
+
+	void dim();
 
 }
