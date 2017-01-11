@@ -11,6 +11,7 @@ import gui.Screen;
 import gui.components.Action;
 import gui.components.Button;
 import gui.components.Graphic;
+import gui.components.MovingComponent;
 import gui.components.TextArea;
 import gui.components.TextLabel;
 import gui.components.Visible;
@@ -40,6 +41,12 @@ public class CoordinateScreen extends Screen implements MouseMotionListener, Mou
 			}
 		});
 		viewObjects.add(myButton);
+		
+		MovingComponent c = new MovingComponent(20,20,100,100);
+		viewObjects.add(c);
+		c.setVy(2);
+		c.setVx(1);
+		c.play();
 		
 		//penguin = new Graphic(30,30,"resources/sampleImages/penguin.jpg");
 		//viewObjects.add(penguin);
