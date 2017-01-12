@@ -7,6 +7,7 @@ import gui.components.Action;
 import gui.components.TextLabel;
 import gui.components.Visible;
 import gui.screens.ClickableScreen;
+import simonComponents.Button;
 
 public class SimonScreenMichael extends ClickableScreen implements Runnable {
 
@@ -121,8 +122,10 @@ public class SimonScreenMichael extends ClickableScreen implements Runnable {
 		Color[] buttonColors = {Color.blue, Color.red, Color.yellow, Color.orange, Color.green, Color.pink};
 		int[] xCoors = {350,365,435,450,435,365};
 		int[] yCoors = {300,335,335,300,265,265};
+		btnList = new ButtonInterfaceMichael[numberOfButtons];
 		for(int i = 0; i < numberOfButtons; i++){
 			final ButtonInterfaceMichael b = getButton();
+			btnList[i]=b;
 			b.setColor(buttonColors[i]);
 			b.setX(xCoors[i]);
 			b.setY(yCoors[i]);
@@ -156,12 +159,13 @@ public class SimonScreenMichael extends ClickableScreen implements Runnable {
 					}
 				}
 			});
+			btnList[i]=b;
 		}
 	}
 
 	//do getButton()
 	private ButtonInterfaceMichael getButton() {
-		return null;
+		return new Button();
 	}
 
 }
