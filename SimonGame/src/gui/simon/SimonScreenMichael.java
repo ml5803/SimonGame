@@ -16,39 +16,39 @@ public class SimonScreenMichael extends ClickableScreen implements Runnable{
 	private TextLabel label;
 	private ButtonInterfaceMichael[] buttons;
 	private ProgressInterfaceMichael progress;
-	private ArrayList<MoveInterfaceMichael> sequence; 
+	private ArrayList<MoveInterfaceMichael> moveList; 
 	private int roundNumber;
 	private boolean acceptingInput;
 	private int sequenceIndex;
-	private int lastSelected;
+	private int lastButtonSelect;
 
 	public SimonScreenMichael(int width, int height) {
 		super(width, height);
 		Thread screen = new Thread(this);
 		screen.start();
+		roundNumber = 0;
 	}
 
 	@Override
 	public void initAllObjects(ArrayList<Visible> viewObjects) {
 		Color[] colors = {Color.red, Color.blue, Color.orange, Color.green, Color.yellow, new Color(180,90,190)};
 		String[] names = {"RED", "BLUE", "ORANGE", "GREEN", "YELLOW", "PURPLE"};
+		int[] xCoors = {325,475,500,475,325,300};
+		int[] yCoors = {225,225,300,375,375,300};
 		int buttonCount = 6;
 		buttons = new ButtonInterfaceMichael[buttonCount];
+		
 		for(int i = 0; i < buttonCount; i++ ){
 			buttons[i] = getAButton();
 			buttons[i].setName(names[i]);
 			buttons[i].setColor(colors[i]);
-			buttons[i].setX(160 + (int)(100*Math.cos(i*2*Math.PI/(buttonCount))));
-			buttons[i].setY(200 - (int)(100*Math.sin(i*2*Math.PI/(buttonCount))));
+			buttons[i].setX(xCoors[i]);
+			buttons[i].setY(yCoors[i]);
 			final ButtonInterfaceMichael b = buttons[i];
-			System.out.println(b+" has x = "+b.getX()+", y ="+b.getY());
 			b.dim();
 			buttons[i].setAction(new Action() {
-
 				public void act() {
-
-						Thread buttonPress = new Thread(new Runnable() {
-							
+						Thread blink = new Thread(new Runnable() {
 							public void run() {
 								b.highlight();
 								try {
@@ -57,21 +57,20 @@ public class SimonScreenMichael extends ClickableScreen implements Runnable{
 									e.printStackTrace();
 								}
 								b.dim();
-								
 							}
 						});
-						buttonPress.start();
+						blink.start();
 						
-
-						if(acceptingInput && sequence.get(sequenceIndex).getButton() == b){
+						if(acceptingInput && moveList.get(sequenceIndex).getButton() == b){
+							//if correct, next round
 							sequenceIndex++;
 						}else if(acceptingInput){
 							gameOver();
 							return;
 						}
-						if(sequenceIndex == sequence.size()){
-							Thread nextRound = new Thread(SimonScreenMichael.this);
-							nextRound.start();
+						if(sequenceIndex == moveList.size()){
+							Thread next = new Thread(SimonScreenMichael.this);
+							next.start();
 						}
 					}
 
@@ -79,16 +78,13 @@ public class SimonScreenMichael extends ClickableScreen implements Runnable{
 			viewObjects.add(buttons[i]);
 		}
 		progress = getProgress();
-		label = new TextLabel(130,230,300,40,"Lessa go!");
-		sequence = new ArrayList<MoveInterfaceMichael>();
-		//add 2 moves to start
-		lastSelected = -1;
-		sequence.add(randomMove());
-		sequence.add(randomMove());
-		roundNumber = 0;
-
 		viewObjects.add(progress);
+		label = new TextLabel(130,150,300,40,"Lessa go!");
 		viewObjects.add(label);
+		moveList = new ArrayList<MoveInterfaceMichael>();
+		lastButtonSelect = -1;
+		moveList.add(randomMove());
+		moveList.add(randomMove());
 	}
 
 	public void gameOver() {
@@ -99,25 +95,41 @@ public class SimonScreenMichael extends ClickableScreen implements Runnable{
 		acceptingInput = false;
 		roundNumber ++;
 		progress.setRound(roundNumber);
-		sequence.add(randomMove());
-		progress.setSequenceLength(sequence.size());
-		changeText("Simon's turn.");
+		moveList.add(randomMove());
+		progress.setSequenceLength(moveList.size());
+		changeText("It's my turn. Watch carefully >:)!");
 		label.setText("");
 		showSequence();
-		changeText("Your turn.");
+		changeText("Press them buttons!");
 		label.setText("");
 		acceptingInput = true;
 		sequenceIndex = 0;
 	}
-
+	
+	private void showSequence() {
+		ButtonInterfaceMichael b = null;
+		for(MoveInterfaceMichael m: moveList){
+			if(b!=null){
+				b.dim();
+			}
+			b = m.getButton();
+			b.highlight();
+			try {
+				Thread.sleep((long)(2000*(2.0/(roundNumber+2))));
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		b.dim();
+	}
 
 	private MoveInterfaceMichael randomMove() {
-		int select = (int) (Math.random()*buttons.length);
-		while(select == lastSelected){
-			select = (int) (Math.random()*buttons.length);
+		int rand = (int) (Math.random()*buttons.length);
+		while(rand == lastButtonSelect){
+			rand = (int) (Math.random()*buttons.length);
 		}
-		lastSelected = select;
-		return new Move(buttons[select]);
+		lastButtonSelect = rand;
+		return new Move(buttons[rand]);
 	}
 
 	private ProgressInterfaceMichael getProgress() {
@@ -139,22 +151,6 @@ public class SimonScreenMichael extends ClickableScreen implements Runnable{
 
 	public void run() {
 		changeText("");
-			nextRound();
-	}
-
-
-	private void showSequence() {
-		ButtonInterfaceMichael b = null;
-		for(MoveInterfaceMichael m: sequence){
-			if(b!=null)b.dim();
-			b = m.getButton();
-			b.highlight();
-			try {
-				Thread.sleep((long)(2000*(2.0/(roundNumber+2))));
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		b.dim();
+		nextRound();
 	}
 }
