@@ -5,15 +5,14 @@ import gui.simon.MoveInterfaceMichael;
 
 public class Move implements MoveInterfaceMichael {
 
-	public Move() {
-		// TODO Auto-generated constructor stub
+	private ButtonInterfaceMichael b; 
+	
+	public Move(ButtonInterfaceMichael b) {
+		this.b = b;
 	}
 
-	@Override
 	public ButtonInterfaceMichael getButton() {
-		// TODO Auto-generated method stub
-		return null;
+		return b;
 	}
-
 
 }
